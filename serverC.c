@@ -10,9 +10,19 @@
 #include <arpa/inet.h>
 #include <sys/wait.h>
 
-
-#define MYPORT "23471"   //my port number for ServerA
+#define MYPORT "23471"   //my port number for ServerB
 #define HOST "localhost"
+int LinkId = -1;
+int Size = 0;
+int Power = 0;
+float Bandwidth = 0;
+float Length = 0;
+float Velocity = 0 ;
+float NoisePower = 0;
+
+float calculate(int linkId){
+	 return 5494;
+}
 
 int main(void){
 	// set up UDP  -- From Beej
@@ -20,11 +30,9 @@ int main(void){
 	int rv;
 	struct addrinfo hints;  // the struct addrinfo have already been filled with relevant info
 	struct addrinfo *servinfo; //point out the result
-	struct addrinfo *p;  //tempoary point
 	struct sockaddr_storage their_addr;
+	struct addrinfo *p;  //tempoary point
 	socklen_t addr_len;
-
-
 	memset(&hints, 0, sizeof hints);  // make sure the struct is empty
 	hints.ai_family = AF_UNSPEC; // don't care IPv4 or IPv6
 	hints.ai_socktype = SOCK_DGRAM; // UDP dgram sockets
@@ -32,7 +40,7 @@ int main(void){
 
 	if ((rv = getaddrinfo(HOST, MYPORT, &hints, &servinfo)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-		return NULL;
+		return 0;
 	}
 // loop through all the results and bind to the first we can----Beej
 	for (p = servinfo; p != NULL; p = p->ai_next) {
@@ -49,63 +57,39 @@ int main(void){
 		break;
 	}
 	if (p == NULL) {
-		fprintf(stderr, "serverA: failed to bind socket\n");
-		return NULL;
+		fprintf(stderr, "serverC: failed to bind socket\n");
+		return 0;
 	}
 	freeaddrinfo(servinfo);
-    printf( "The Server C is up and running using UDP on port %s.\n", MYPORT);
-
-   while(1){
+	printf( "The Server C is up and running using UDP on port <%s>.\n", MYPORT);
+	while(1){
 		addr_len = sizeof their_addr;
 		char function[3];
 		int pre_num = 0;
-		int result = 0;
+		float result = 0;
+		// recvfrom(sockfd, function, sizeof function , 0,(struct sockaddr *)&their_addr, &addr_len);
+		recvfrom(sockfd, (int *)& LinkId, sizeof LinkId , 0,(struct sockaddr *)&their_addr, &addr_len);
+		recvfrom(sockfd, (int *)& Size, sizeof Size , 0,(struct sockaddr *)&their_addr, &addr_len);
+		recvfrom(sockfd, (int *)& Power, sizeof Power , 0,(struct sockaddr *)&their_addr, &addr_len);
+		recvfrom(sockfd, (float *)& Bandwidth, sizeof Bandwidth , 0,(struct sockaddr *)&their_addr, &addr_len);
+		recvfrom(sockfd, (float *)& Length, sizeof Length , 0,(struct sockaddr *)&their_addr, &addr_len);
+		recvfrom(sockfd, (float *)& Velocity, sizeof Velocity , 0,(struct sockaddr *)&their_addr, &addr_len);
+		recvfrom(sockfd, (float *)& NoisePower, sizeof NoisePower , 0,(struct sockaddr *)&their_addr, &addr_len);
+		printf("Bandwidth <%f>, Length <%f>, Velocity <%f> , Noise Power <%f> \n", Bandwidth,Length, Velocity,NoisePower);
 
-		recvfrom(sockfd, function, sizeof function , 0,(struct sockaddr *)&their_addr, &addr_len);
-		recvfrom(sockfd, (char *)& pre_num, sizeof pre_num , 0,(struct sockaddr *)&their_addr, &addr_len);
-		printf("The Server C has received %d numbers. \n", pre_num);
-		int dataX[pre_num];
-		//recvfrom(sockfd, (char *)& dataX, sizeof dataX, 0,(struct sockaddr *)&their_addr, &addr_len);
 
-		recvfrom(sockfd, (const char *)&dataX, sizeof dataX, 0,(struct sockaddr *)&their_addr, &addr_len);
-		//printf("temp = %d \n", temp);
 
-		char * function_name = function;
-		//make the calcuration
-		if(strcmp(function_name, "SUM") == 0){
-			int i;
-			for(i = 0; i < pre_num; i++){
-				result = result + dataX[i];
-			}
-		}
-		else if(strcmp(function_name,"SOS") == 0){
-			int i;
-			for(i = 0; i < pre_num; i++){
-				int m = dataX[i];
-				result = result + m * m;
-			}
-		}
-		else if(strcmp(function_name,"MAX") == 0){
-			int i;
-			for(i = 0; i < pre_num; i++){
-				if(dataX[i] > result )
-					result = dataX[i];
-			}
-		}
-		else if(strcmp(function_name, "MIN") == 0){
-			int i;
-			result = 2147483647;
-			for(i = 0; i < pre_num; i++){
-				if(dataX[i] < result )
-					result = dataX[i];
-			}
-		}
-		printf("The Server C has successfully finished the reduction %s : %d \n", function_name,result);
 
+		printf("The Server C received link information of link <%d>, file size <%d>, and signal power <%d>  \n", LinkId, Size,Power);
+
+		result = calculate(LinkId);
 		//send back to aws
-		sendto(sockfd, (char *)& result, sizeof result , 0,(struct sockaddr *) &their_addr, addr_len);
-		printf("The Server C has successfully finished sending the reduction value to AWS server. \n");
+		sendto(sockfd, (float *)& result, sizeof result , 0,(struct sockaddr *) &their_addr, addr_len);
+		// sendto(sockfd, (float *)& Bandwidth, sizeof Bandwidth , 0,(struct sockaddr *) &their_addr, addr_len);
+		// sendto(sockfd, (float *)& Length, sizeof Length , 0,(struct sockaddr *) &their_addr, addr_len);
+		// sendto(sockfd, (float *)& Velocity, sizeof Velocity , 0,(struct sockaddr *) &their_addr, addr_len);
+		// sendto(sockfd, (float *)& NoisePower, sizeof NoisePower , 0,(struct sockaddr *) &their_addr, addr_len);
+		printf("The Server C finished sending the output to AWS  \n");
 
 	}
-
 }

@@ -19,6 +19,8 @@
 #define PORTB "22471"
 #define PORTC "23471"
 int LinkId = 0;
+int Size = 0;
+int Power = 0;
 float Bandwidth = 0;
 float Length = 0;
 float Velocity = 0 ;
@@ -40,6 +42,64 @@ void *get_in_addr(struct sockaddr *sa)
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
+//Send information to server C and get result
+float compute(){
+
+  int mysock;
+  struct addrinfo hints, *servinfo, *p;
+  int rv;
+  char ch = 'C';
+  char* backserver_port;
+  if(ch == 'A')
+    backserver_port = PORTA;
+  else if (ch == 'B')
+    backserver_port = PORTB;
+  else if( ch == 'C')
+    backserver_port = PORTC;
+  //printf("port number: %s \n", backserver_port);
+  //set up UDP -- from Beej
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC; // set to AF_INET to force IPv4
+    hints.ai_socktype = SOCK_DGRAM;
+
+
+    if ((rv = getaddrinfo(HOST, backserver_port, &hints, &servinfo))
+			!= 0) {
+		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+		return 1;
+	}
+
+	// loop through all the results and make a socket----Beej
+	for (p = servinfo; p != NULL; p = p->ai_next) {
+		if ((mysock = socket(p->ai_family, p->ai_socktype, p->ai_protocol))
+				== -1) {
+			perror("talker: socket");
+			continue;
+		}
+		break;
+	}
+	if (p == NULL) {
+		fprintf(stderr, "talker: failed to bind socket\n");
+		return 2;
+	}
+  float finalResult;
+	//using UDP to send the data
+	sendto(mysock, (int *)& LinkId, sizeof LinkId, 0, p->ai_addr,p->ai_addrlen);
+  sendto(mysock, (int *)& Size, sizeof Size, 0, p->ai_addr,p->ai_addrlen);
+  sendto(mysock, (int *)& Power, sizeof Power, 0, p->ai_addr,p->ai_addrlen);
+  sendto(mysock, (float *)& Bandwidth, sizeof Bandwidth, 0, p->ai_addr,p->ai_addrlen);
+  sendto(mysock, (float *)& Length, sizeof Length, 0, p->ai_addr,p->ai_addrlen);
+  sendto(mysock, (float *)& Velocity, sizeof Velocity, 0, p->ai_addr,p->ai_addrlen);
+  sendto(mysock, (float *)& NoisePower, sizeof NoisePower, 0, p->ai_addr,p->ai_addrlen);
+
+    printf("The AWS sent link ID= <%d> to Backend-Server C using UDP over port <%s>\n", LinkId,PORTC);
+	recvfrom(mysock, (float *)& finalResult, sizeof finalResult, 0 , NULL, NULL);
+  // recvfrom(mysock, (float *)& Bandwidth, sizeof Bandwidth, 0 , NULL, NULL);
+  // recvfrom(mysock, (float *)& Length, sizeof Length, 0 , NULL, NULL);
+  // recvfrom(mysock, (float *)& Velocity, sizeof Velocity, 0 , NULL, NULL);
+  // recvfrom(mysock, (float *)& NoisePower, sizeof NoisePower, 0 , NULL, NULL);
+	return finalResult;
+}
 
 // using UDP to calculate the result for back-server
 int getDataB(int linkid){
@@ -205,16 +265,14 @@ int main(){
 		char function_name[3];
 		int total_num;
     int linkId;
-    int size;
-    int power;
+    // int size;
+    // int power;
 		// recv(new_fd, function_name, sizeof function_name, 0);
     recv(new_fd, (int *)&linkId, sizeof linkId, 0);
-    recv(new_fd, (int *)&size, sizeof size, 0);
-    recv(new_fd, (int *)&power, sizeof power, 0);
-    printf("The AWS received link ID= <%d>, size= <%d> and power= <%d> from the client using TCP over port <%d> \n",linkId,size,power,client_port);
+    recv(new_fd, (int *)&Size, sizeof Size, 0);
+    recv(new_fd, (int *)&Power, sizeof Power, 0);
+    printf("The AWS received link ID= <%d>, size= <%d> and power= <%d> from the client using TCP over port <%d> \n",linkId,Size,Power,client_port);
 		// printf("The AWS has received %d numbers from the client using TCP over port %d. \n", total_num, client_port);
-    int resultB = 2;
-    int resultC = 2;
     int resultA = getDataA(linkId);
     if(resultA == linkId)
       printf("The AWS received <1> matches from Backend-Server A using UDP over port <%s> \n", PORTA);
@@ -231,8 +289,15 @@ int main(){
       printf("The AWS received <0> matches from Backend-Server B using UDP over port <%s> \n", PORTB);
     }
 		//calculate the final result
-		char *function = function_name;
-		int result = resultA + resultB + resultC;
+    int result;
+    float finalResult;
+    if(resultA == linkId){
+		  result = resultA;
+      finalResult = compute();
+      printf("The final result is %f \n", finalResult);
+    }
+    else
+      result = -1;
 		// printf("The AWS has successfully finished the reduction %s: %d \n" ,function, result);
 		send(new_fd, (const char *)&result, sizeof(result), 0);
 		// printf("The AWS has successfully finished sending the reduction value to client.\n");
