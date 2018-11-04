@@ -92,12 +92,13 @@ float compute(){
   sendto(mysock, (float *)& Velocity, sizeof Velocity, 0, p->ai_addr,p->ai_addrlen);
   sendto(mysock, (float *)& NoisePower, sizeof NoisePower, 0, p->ai_addr,p->ai_addrlen);
 
-    printf("The AWS sent link ID= <%d> to Backend-Server C using UDP over port <%s>\n", LinkId,PORTC);
+    printf("The AWS sent link ID= <%d>, size = <%d>, power = <%d> and link information to Backend-Server C using UDP over port <%s>\n", LinkId, Size,Power,PORTC);
 	recvfrom(mysock, (float *)& finalResult, sizeof finalResult, 0 , NULL, NULL);
   // recvfrom(mysock, (float *)& Bandwidth, sizeof Bandwidth, 0 , NULL, NULL);
   // recvfrom(mysock, (float *)& Length, sizeof Length, 0 , NULL, NULL);
   // recvfrom(mysock, (float *)& Velocity, sizeof Velocity, 0 , NULL, NULL);
   // recvfrom(mysock, (float *)& NoisePower, sizeof NoisePower, 0 , NULL, NULL);
+  printf("The AWS received outputs from Backend-Server C using UDP over port <%s> \n",PORTC);
 	return finalResult;
 }
 
@@ -294,14 +295,29 @@ int main(){
     if(resultA == linkId){
 		  result = resultA;
       finalResult = compute();
-      printf("The final result is %f \n", finalResult);
+      // printf("The final result is %f \n", finalResult);
+      // printf("The AWS sent delay = <%f> ms to the client using TCP over port <%s>\n",finalResult,TCPPORT);
     }
     else
-      result = -1;
+      finalResult = -1;
 		// printf("The AWS has successfully finished the reduction %s: %d \n" ,function, result);
-		send(new_fd, (const char *)&result, sizeof(result), 0);
+		send(new_fd, (const float *)&finalResult, sizeof(finalResult), 0);
+    if(finalResult!=-1)
+      printf("The AWS sent delay = <%f> ms to the client using TCP over port <%s>\n",finalResult,TCPPORT);
+    else{
+        printf("The AWS sent No Match to the monitor and the client using TCP over ports <%s> and <%s>, repsectively\n",TCPPORT,TCPPORT);
+    }
+
 		// printf("The AWS has successfully finished sending the reduction value to client.\n");
 		close(new_fd);
+    //
+    // LinkId = 0;
+    // Size = 0;
+    // Power = 0;
+    // Bandwidth = 0;
+    // Length = 0;
+    // Velocity = 0 ;
+    // NoisePower = 0;
 	}
 
 }

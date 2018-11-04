@@ -9,10 +9,12 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <sys/wait.h>
+#include <math.h>
 
 #define MYPORT "23471"   //my port number for ServerB
 #define HOST "localhost"
 int LinkId = -1;
+//Size is in bits
 int Size = 0;
 int Power = 0;
 float Bandwidth = 0;
@@ -21,7 +23,16 @@ float Velocity = 0 ;
 float NoisePower = 0;
 
 float calculate(int linkId){
-	 return 5494;
+	//This will calculate TProp in microseconds
+	float TProp = (Length/Velocity)/10;
+	float NoisePowerInWatts = pow(10,(NoisePower/10)-3);
+	float SignalPowerInWatts = pow(10,(Power/10)-2);
+	//The capacity is in Mbps
+	float Capacity = Bandwidth*(log(1 + (SignalPowerInWatts/NoisePowerInWatts))/log(2));
+	//Trans is in microseconds
+	float TTrans = (Size/Capacity);
+	float EndToEndDelay = 2*TProp + TTrans;
+	return EndToEndDelay;
 }
 
 int main(void){
