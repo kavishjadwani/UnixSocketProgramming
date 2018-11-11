@@ -90,7 +90,7 @@ int main(void){
 		return 0;
 	}
 	freeaddrinfo(servinfo);
-	printf( "The Server A is up and running using UDP on port <%s>.\n", MYPORT);
+	printf( "\nThe Server A is up and running using UDP on port <%s>.\n", MYPORT);
 
 
 	while(1){

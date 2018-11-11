@@ -21,17 +21,39 @@ float Bandwidth = 0;
 float Length = 0;
 float Velocity = 0 ;
 float NoisePower = 0;
-
+float TProp = 0;
+float TTrans = 0;
 float calculate(int linkId){
 	//This will calculate TProp in microseconds
-	float TProp = (Length/Velocity)/10;
-	float NoisePowerInWatts = pow(10,(NoisePower/10)-3);
-	float SignalPowerInWatts = pow(10,(Power/10)-2);
+	TProp = (Length/Velocity)/10;
+	double NoisePowerInWatts = pow(10,(NoisePower/10)-3);
+
+	double SignalPowerInWatts = pow(10,(Power/10)-3);
 	//The capacity is in Mbps
 	float Capacity = Bandwidth*(log(1 + (SignalPowerInWatts/NoisePowerInWatts))/log(2));
 	//Trans is in microseconds
-	float TTrans = (Size/Capacity);
+	TTrans = (Size/Capacity);
 	float EndToEndDelay = 2*TProp + TTrans;
+	TTrans = TTrans/1000;
+	TProp = TProp/1000;
+	EndToEndDelay = EndToEndDelay/1000;
+	/*
+	printf("*********************************************************\n");
+	printf("The Link id is %d \n",LinkId);
+	printf("The Bandwidth is %f \n",Bandwidth);
+	printf("The Length is %f \n",Length);
+	printf("The Velocity is %f \n",Velocity);
+	printf("The Noise Power in db is %f \n",NoisePower);
+	printf("The Noise Power in Watts is %f \n",NoisePowerInWatts);
+	printf("The Capacity is %f \n",Capacity);
+	printf("The Transmission Time Delay in ms is %f \n",TTrans);
+	printf("The Propagation Delay in ms is %f \n",TProp);
+	printf("The Delay in ms is %f \n",EndToEndDelay);
+	printf("The File Size in ms is %d \n",Size);
+	printf("The Signal Power in db is %d \n",Power);
+	printf("The Signal Power in Watts is %f \n",SignalPowerInWatts);
+	printf("*********************************************************");
+*/
 	return EndToEndDelay;
 }
 
@@ -86,7 +108,7 @@ int main(void){
 		recvfrom(sockfd, (float *)& Length, sizeof Length , 0,(struct sockaddr *)&their_addr, &addr_len);
 		recvfrom(sockfd, (float *)& Velocity, sizeof Velocity , 0,(struct sockaddr *)&their_addr, &addr_len);
 		recvfrom(sockfd, (float *)& NoisePower, sizeof NoisePower , 0,(struct sockaddr *)&their_addr, &addr_len);
-		printf("Bandwidth <%f>, Length <%f>, Velocity <%f> , Noise Power <%f> \n", Bandwidth,Length, Velocity,NoisePower);
+		// printf("Bandwidth <%f>, Length <%f>, Velocity <%f> , Noise Power <%f> \n", Bandwidth,Length, Velocity,NoisePower);
 
 
 
@@ -94,8 +116,11 @@ int main(void){
 		printf("The Server C received link information of link <%d>, file size <%d>, and signal power <%d>  \n", LinkId, Size,Power);
 
 		result = calculate(LinkId);
+		printf("The Server C finished the calculation for link <%d> \n", LinkId);
 		//send back to aws
 		sendto(sockfd, (float *)& result, sizeof result , 0,(struct sockaddr *) &their_addr, addr_len);
+		sendto(sockfd, (float *)& TTrans, sizeof TTrans , 0,(struct sockaddr *) &their_addr, addr_len);
+		sendto(sockfd, (float *)& TProp, sizeof TProp , 0,(struct sockaddr *) &their_addr, addr_len);
 		// sendto(sockfd, (float *)& Bandwidth, sizeof Bandwidth , 0,(struct sockaddr *) &their_addr, addr_len);
 		// sendto(sockfd, (float *)& Length, sizeof Length , 0,(struct sockaddr *) &their_addr, addr_len);
 		// sendto(sockfd, (float *)& Velocity, sizeof Velocity , 0,(struct sockaddr *) &their_addr, addr_len);

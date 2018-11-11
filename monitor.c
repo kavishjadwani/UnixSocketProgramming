@@ -12,11 +12,16 @@
 #include <signal.h>
 #include <ctype.h>
 
-#define AWSPORT "25471"   //aws TCP port
+#define AWSPORT "26471"   //aws TCP port
 #define HOST "localhost"
 
 int total_num = 0;
 int data[30000];
+int LinkId;
+int Size;
+int Power;
+float TTrans;
+float TProp;
 
 void *get_in_addr(struct sockaddr *sa) {
 	if (sa->sa_family == AF_INET) {
@@ -24,38 +29,7 @@ void *get_in_addr(struct sockaddr *sa) {
 	}
 	return &(((struct sockaddr_in6*) sa)->sin6_addr);
 }
-
-
-/*void read_file(){
-	FILE *fp = NULL;
-	fp = fopen("nums.csv","r");
-	if(fp == NULL){
-		exit(0);
-	}
-	int ch;
-  	while(!feof(fp))
-    {
-       fscanf(fp,"%d",&data[total_num]);
-		total_num++;
-    }
-    total_num--;
-    fclose(fp);
-}
-*/
-int main(int argc, char* argv[]){
-	char function_name[3];
-	strcpy(function_name,argv[1]);
-	long conv1 = strtol(argv[1], NULL, 10);
-	int linkId = conv1;
-	long conv2 = strtol(argv[2], NULL, 10);
-	int size = conv2;
-	long conv3 = strtol(argv[3], NULL, 10);
-	int power = conv3;
-	// printf("The Link Id is : %d \nThe size is : %d \nThe power is: %d \n", linkId,size, power);
-	int k = 0;
-	for( k = 0; k < 3; k ++){
-		function_name[k] = toupper(function_name[k]);
-	}
+int main(void){
 	//set up TCP --from Beej
 	int sockfd = 0;
 	struct addrinfo hints, *servinfo, *p;
@@ -74,43 +48,46 @@ int main(int argc, char* argv[]){
 	for (p = servinfo; p != NULL; p = p->ai_next) {
 		if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol))
 				== -1) {
-			perror("client: socket");
+			perror("monitor: socket");
 			continue;
 		}
 
 		if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
 			close(sockfd);
-			perror("client: connect");
+			perror("monitor: connect");
 			continue;
 		}
 		break;
 	}
 
 	if (p == NULL) {
-		fprintf(stderr, "client: failed to connect. \n");
+		fprintf(stderr, "monitor: failed to connect. \n");
 		exit(0);
 		return 2;
 	}
 	freeaddrinfo(servinfo); // all done with this structure
-	printf("The client is up and running. \n");
-
-//	read_file();
-
-	// send(sockfd, function_name, sizeof function_name, 0);
-	send(sockfd,  (int *)&linkId, sizeof (linkId), 0);
-	send(sockfd,  (int *)&size, sizeof (size), 0);
-	send(sockfd,  (int *)&power, sizeof (power), 0);
-	// send(sockfd, (char *)& data, sizeof data, 0);
-	printf("The client sent ID= <%d> , size= <%d> and power = <%d> to AWS \n",linkId,size,power);
-	// printf("The client sent ID= %d, size=%d, and power=%d to AWS”,linkId,size,power);
-	// printf("The client has sent %d numbers to AWS.\n",total_num);
-
+	printf("The monitor is up and running. \n");
 	float result = -1;
-	recv(sockfd, (float *)&result, sizeof result, 0);
-	if(result!=-1)
-		printf("The delay for link %d is <%f> \n", linkId, result);
+	// while (1) {
+	recv(sockfd, (int *)&LinkId, sizeof LinkId, 0);
+	recv(sockfd, (int *)&Size, sizeof Size, 0);
+	recv(sockfd, (int *)&Power, sizeof Power, 0);
+	printf("The  monitor received link ID = <%d>, size = <%d>, and power = <%d> from the AWS\n",LinkId,Size,Power);
+  recv(sockfd, (float *)&result, sizeof result, 0);
+	recv(sockfd, (float *)&TTrans, sizeof TTrans, 0);
+	recv(sockfd, (float *)&TProp, sizeof TProp, 0);
+
+
+	if(result!=-1){
+		printf("The result for link  <%d> :\n",  LinkId);
+		printf("Tt = <%f> \n", TTrans);
+		printf("Tp = <%f> \n", TProp);
+		printf("Delay = <%f> \n", result);
+	}
 	else
-		printf("Found no matches for link <%d> \n",linkId);
-	result = 0;
+		printf("Found no matches for link <%d> \n",LinkId);
+	result = -1;
+	close(sockfd);
+	return 0;
 
 }

@@ -107,10 +107,10 @@ int main(int argc, char* argv[]){
 
 	float result = -1;
 	recv(sockfd, (float *)&result, sizeof result, 0);
+	printf("The final result is %f\n", result);
 	if(result!=-1)
 		printf("The delay for link %d is <%f> \n", linkId, result);
 	else
 		printf("Found no matches for link <%d> \n",linkId);
-	result = 0;
-
+	result = -1;
 }
