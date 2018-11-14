@@ -25,23 +25,6 @@ void *get_in_addr(struct sockaddr *sa) {
 	return &(((struct sockaddr_in6*) sa)->sin6_addr);
 }
 
-
-/*void read_file(){
-	FILE *fp = NULL;
-	fp = fopen("nums.csv","r");
-	if(fp == NULL){
-		exit(0);
-	}
-	int ch;
-  	while(!feof(fp))
-    {
-       fscanf(fp,"%d",&data[total_num]);
-		total_num++;
-    }
-    total_num--;
-    fclose(fp);
-}
-*/
 int main(int argc, char* argv[]){
 	char function_name[3];
 	strcpy(function_name,argv[1]);
@@ -51,7 +34,6 @@ int main(int argc, char* argv[]){
 	int size = conv2;
 	long conv3 = strtol(argv[3], NULL, 10);
 	int power = conv3;
-	// printf("The Link Id is : %d \nThe size is : %d \nThe power is: %d \n", linkId,size, power);
 	int k = 0;
 	for( k = 0; k < 3; k ++){
 		function_name[k] = toupper(function_name[k]);
@@ -60,7 +42,6 @@ int main(int argc, char* argv[]){
 	int sockfd = 0;
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
-
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
@@ -69,7 +50,6 @@ int main(int argc, char* argv[]){
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 		return 1;
 	}
-
 	// loop through all the results and connect to the first we can----Beej
 	for (p = servinfo; p != NULL; p = p->ai_next) {
 		if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol))
@@ -77,7 +57,6 @@ int main(int argc, char* argv[]){
 			perror("client: socket");
 			continue;
 		}
-
 		if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
 			close(sockfd);
 			perror("client: connect");
@@ -85,7 +64,6 @@ int main(int argc, char* argv[]){
 		}
 		break;
 	}
-
 	if (p == NULL) {
 		fprintf(stderr, "client: failed to connect. \n");
 		exit(0);
@@ -93,23 +71,15 @@ int main(int argc, char* argv[]){
 	}
 	freeaddrinfo(servinfo); // all done with this structure
 	printf("The client is up and running. \n");
-
-//	read_file();
-
-	// send(sockfd, function_name, sizeof function_name, 0);
 	send(sockfd,  (int *)&linkId, sizeof (linkId), 0);
 	send(sockfd,  (int *)&size, sizeof (size), 0);
 	send(sockfd,  (int *)&power, sizeof (power), 0);
 	// send(sockfd, (char *)& data, sizeof data, 0);
-	printf("The client sent ID= <%d> , size= <%d> and power = <%d> to AWS \n",linkId,size,power);
-	// printf("The client sent ID= %d, size=%d, and power=%d to AWS”,linkId,size,power);
-	// printf("The client has sent %d numbers to AWS.\n",total_num);
-
+	printf("The client sent ID= <%d>, size= <%d> and power = <%d> to AWS \n",linkId,size,power);
 	float result = -1;
 	recv(sockfd, (float *)&result, sizeof result, 0);
-	printf("The final result is %f\n", result);
 	if(result!=-1)
-		printf("The delay for link %d is <%f> \n", linkId, result);
+		printf("The delay for link <%d> is <%f> ms \n", linkId, result);
 	else
 		printf("Found no matches for link <%d> \n",linkId);
 	result = -1;
