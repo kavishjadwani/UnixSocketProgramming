@@ -12,6 +12,8 @@
 
 #define MYPORT "22471"   //my port number for ServerB
 #define HOST "localhost"
+#define IPADDRESS "127.0.0.1" // local IP address
+
 int LinkId = -1;
 float Bandwidth = 0;
 float Length = 0;

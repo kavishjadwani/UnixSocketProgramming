@@ -19,6 +19,8 @@
 #define PORTA "21471"
 #define PORTB "22471"
 #define PORTC "23471"
+#define IPADDRESS "127.0.0.1" // local IP address
+
 int LinkId = 0;
 int Size = 0;
 int Power = 0;
@@ -30,7 +32,6 @@ float TTrans = 0;
 float TProp = 0;
 
 void sigchld_handler(int s){
-    // waitpid() might overwrite errno, so we save and restore it:
     int saved_errno = errno;
     while(waitpid(-1, NULL, WNOHANG) > 0);
     errno = saved_errno;
@@ -54,7 +55,6 @@ float compute(){
     backserver_port = PORTB;
   else if( ch == 'C')
     backserver_port = PORTC;
-  //printf("port number: %s \n", backserver_port);
   //set up UDP -- from Beej
   memset(&hints, 0, sizeof hints);
   hints.ai_family = AF_UNSPEC; // set to AF_INET to force IPv4
@@ -88,15 +88,10 @@ float compute(){
   sendto(mysock, (float *)& Length, sizeof Length, 0, p->ai_addr,p->ai_addrlen);
   sendto(mysock, (float *)& Velocity, sizeof Velocity, 0, p->ai_addr,p->ai_addrlen);
   sendto(mysock, (float *)& NoisePower, sizeof NoisePower, 0, p->ai_addr,p->ai_addrlen);
-
   printf("The AWS sent link ID= <%d>, size = <%d>, power = <%d> and link information to Backend-Server C using UDP over port <%s>\n", LinkId, Size,Power,PORTC);
 	recvfrom(mysock, (float *)& finalResult, sizeof finalResult, 0 , NULL, NULL);
   recvfrom(mysock, (float *)& TTrans, sizeof TTrans, 0 , NULL, NULL);
   recvfrom(mysock, (float *)& TProp, sizeof TProp, 0 , NULL, NULL);
-  // recvfrom(mysock, (float *)& Bandwidth, sizeof Bandwidth, 0 , NULL, NULL);
-  // recvfrom(mysock, (float *)& Length, sizeof Length, 0 , NULL, NULL);
-  // recvfrom(mysock, (float *)& Velocity, sizeof Velocity, 0 , NULL, NULL);
-  // recvfrom(mysock, (float *)& NoisePower, sizeof NoisePower, 0 , NULL, NULL);
   printf("The AWS received outputs from Backend-Server C using UDP over port <%s> \n",PORTC);
 	return finalResult;
 }
@@ -113,13 +108,10 @@ int getDataB(int linkid){
     backserver_port = PORTB;
   else if( ch == 'C')
     backserver_port = PORTC;
-  //printf("port number: %s \n", backserver_port);
   //set up UDP -- from Beej
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC; // set to AF_INET to force IPv4
     hints.ai_socktype = SOCK_DGRAM;
-
-
     if ((rv = getaddrinfo(HOST, backserver_port, &hints, &servinfo))
 			!= 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
@@ -141,7 +133,7 @@ int getDataB(int linkid){
 	}
 	//using UDP to send the data
 	sendto(mysock, (int *)& linkid, sizeof linkid, 0, p->ai_addr,p->ai_addrlen);
-  printf("The AWS sent link ID= <%d> to Backend-Server B using UDP over port <%s>\n", linkid,PORTB);
+  printf("The AWS sent link ID= <%d> to Backend-Server <B> using UDP over port <%s>\n", linkid,PORTB);
 	recvfrom(mysock, (float *)& LinkId, sizeof LinkId, 0 , NULL, NULL);
   recvfrom(mysock, (float *)& Bandwidth, sizeof Bandwidth, 0 , NULL, NULL);
   recvfrom(mysock, (float *)& Length, sizeof Length, 0 , NULL, NULL);
@@ -161,7 +153,6 @@ int getDataA(int linkid){
     backserver_port = PORTB;
   else if( ch == 'C')
     backserver_port = PORTC;
-  //printf("port number: %s \n", backserver_port);
   //set up UDP -- from Beej
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC; // set to AF_INET to force IPv4
@@ -186,13 +177,12 @@ int getDataA(int linkid){
 	}
 	//using UDP to send the data
 	sendto(mysock, (int *)& linkid, sizeof linkid, 0, p->ai_addr,p->ai_addrlen);
-  printf("The AWS sent link ID= <%d> to Backend-Server A using UDP over port <%s>\n", linkid,PORTA);
+  printf("The AWS sent link ID= <%d> to Backend-Server <A> using UDP over port <%s>\n", linkid,PORTA);
 	recvfrom(mysock, (int *)& LinkId, sizeof LinkId, 0 , NULL, NULL);
   recvfrom(mysock, (float *)& Bandwidth, sizeof Bandwidth, 0 , NULL, NULL);
   recvfrom(mysock, (float *)& Length, sizeof Length, 0 , NULL, NULL);
   recvfrom(mysock, (float *)& Velocity, sizeof Velocity, 0 , NULL, NULL);
   recvfrom(mysock, (float *)& NoisePower, sizeof NoisePower, 0 , NULL, NULL);
-	//printf("the result is %d \n", result);
 	return LinkId;
 }
 void clear_dead_process(){
@@ -262,14 +252,6 @@ int main(){
   sockfd = setupTCP(TCPPORT);
   sockfd_M = setupTCP(MONITORPORT);
 	printf( "The AWS is up and running. \n");
-
-  //keep accepting monitor requiring
-      /*sin_size = sizeof their_addr;
-      new_fd_M = accept(sockfd_M, (struct sockaddr *) &their_addr, &sin_size);
-      if (new_fd_M == -1) {
-                  perror("accept");
-                  exit(1);
-      }*/
       int monitorOn=0;
       while (monitorOn == 0){
         // child socket connect with monitor
@@ -279,15 +261,9 @@ int main(){
           perror("accept");
           continue;
         }
-        //printf("debug:monitorOn=%d\n",monitorOn);
-        // inet_ntop(their_addr.ss_family,
-        //   get_in_addr((struct sockaddr *)&their_addr),
-        //   s, sizeof s);
-        //printf("server: got connection from %s\n", s);
         if (!fork()) { // this is the child process
           close(sockfd_M); // child doesn't need the listener
           monitorOn=1;
-          // printf("debug:monitorOn=%d\n",monitorOn);
           continue;
         }
         close(new_fd_M);  // parent doesn't need this
@@ -301,40 +277,29 @@ int main(){
 			perror("accept");
 			exit(1);
 		}
-		// get the port of client
-		// inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *) &their_addr), s, sizeof s);
-		// struct sockaddr_in addrTheir;
-		// memset(&addrTheir, 0, sizeof(addrTheir));
-		// int len = sizeof(addrTheir);
-		// getpeername(new_fd, (struct sockaddr *) &addrTheir, (socklen_t *) &len);
-		// int client_port = addrTheir.sin_port;
-		// //receive all the information from client
-		// char function_name[3];
 		int total_num;
     int linkId;
     recv(new_fd, (int *)&linkId, sizeof linkId, 0);
     recv(new_fd, (int *)&Size, sizeof Size, 0);
     recv(new_fd, (int *)&Power, sizeof Power, 0);
     send(new_fd_M, (const int *)&linkId, sizeof linkId , 0);
-    // printf("******************************\n");
-    // printf("The AWS sent link id %d to monitor\n", linkId);
-    // printf("******************************\n");
     send(new_fd_M, (const int *)&Size, sizeof Size , 0);
     send(new_fd_M, (const int *)&Power, sizeof Power , 0);
-    printf("The AWS received link ID= <%d>, size= <%d> and power= <%d> from the client using TCP over port  \n",linkId,Size,Power);
+    printf("The AWS received link ID= <%d>, size= <%d> and power= <%d> from the client using TCP over port <%s> \n",linkId,Size,Power,TCPPORT);
+    printf("The AWS sent link ID= <%d>, size= <%d> and power= <%d> to the monitor using TCP over port <%s> \n",linkId,Size,Power,MONITORPORT);
+
 		int resultA = getDataA(linkId);
     if(resultA == linkId)
-      printf("The AWS received <1> matches from Backend-Server A using UDP over port <%s> \n", PORTA);
+      printf("The AWS received <1> matches from Backend-Server <A> using UDP over port <%s> \n", PORTA);
     else
-    printf("The AWS received <0> matches from Backend-Server A using UDP over port <%s> \n", PORTA);
+    printf("The AWS received <0> matches from Backend-Server <A> using UDP over port <%s> \n", PORTA);
     if(resultA != linkId){
       resultA = getDataB(linkId);
       if(resultA == linkId)
-        printf("The AWS received <1> matches from Backend-Server B using UDP over port <%s> \n", PORTB);
+        printf("The AWS received <1> matches from Backend-Server <B> using UDP over port <%s> \n", PORTB);
       else
-      printf("The AWS received <0> matches from Backend-Server B using UDP over port <%s> \n", PORTB);
+      printf("The AWS received <0> matches from Backend-Server <B> using UDP over port <%s> \n", PORTB);
     }
-
 		//calculate the final result
     float result;
     float finalResult = -1;
@@ -349,18 +314,17 @@ int main(){
     send(new_fd_M, (const float *)&TTrans, sizeof(TTrans), 0);
     send(new_fd_M, (const float *)&TProp, sizeof(TProp), 0);
 		send(new_fd, (const float *)&finalResult, sizeof(finalResult), 0);
-
-    // printf("The final result is %f\n", result);
-    if(finalResult!=-1)
+    if(finalResult!=-1){
       printf("The AWS sent delay = <%f> ms to the client using TCP over port <%s>\n",finalResult,TCPPORT);
-    else{
+      printf("The AWS sent detailed results to the monitor using TCP over port <%s> \n",MONITORPORT);
+}else{
         printf("The AWS sent No Match to the monitor and the client using TCP over ports <%s> and <%s>, repsectively\n",TCPPORT,MONITORPORT);
     }
     // finalResult = -1;
     close(new_fd);
     // close(new_fd_M);
-	}//Close while loop for client
-// }// Close While loop for monitor
+	}
+
 
 
 }

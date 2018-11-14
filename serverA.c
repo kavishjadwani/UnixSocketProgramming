@@ -12,6 +12,8 @@
 
 #define MYPORT "21471"   //my port number for ServerA
 #define HOST "localhost"
+#define IPADDRESS "127.0.0.1" // local IP address
+
 int LinkId = -1;
 float Bandwidth = 0;
 float Length = 0;
@@ -90,7 +92,7 @@ int main(void){
 	}
 	freeaddrinfo(servinfo);
 	printf( "The Server A is up and running using UDP on port <%s>.\n", MYPORT);
-	//Keep the Socket for Server A ON 
+	//Keep the Socket for Server A ON
 	while(1){
 		addr_len = sizeof their_addr;
 		char function[3];

@@ -14,6 +14,8 @@
 
 #define AWSPORT "25471"   //aws TCP port
 #define HOST "localhost"
+#define IPADDRESS "127.0.0.1" // local IP address
+
 
 int total_num = 0;
 int data[30000];

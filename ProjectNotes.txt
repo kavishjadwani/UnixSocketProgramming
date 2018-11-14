@@ -1,3 +1,10 @@
 Notes :
-IF the link Id is not found on both the Server A and Server B, then nothing is
- sent to Server C and thus server C doesn't print anything. 
+1.IF the link Id is not found on both the Server A and Server B, then nothing is
+sent to Server C and thus server C doesn't print anything.
+2. If Link Id is found at Server A, there is no need to check for the Link Id on
+ Server B
+3. If Link Id is not found on Server A and Server B, there is no need to do
+calculation and hence no information needs to be sent to Server C and thus in
+this case, Aws doesn't print any message related to Server C and simply sends No
+Match to both client and monitor.
+4. 
