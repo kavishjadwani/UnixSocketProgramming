@@ -105,6 +105,7 @@ int main(void)
 			}else
 				printf("Found no matches for link <%d> \n",LinkId);
 			LinkId = -1;
+			printf("\n \n \n");
 		}
 	}
 	close(sockfd);

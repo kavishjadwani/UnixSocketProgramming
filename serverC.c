@@ -34,7 +34,7 @@ float TProp = 0;
 float TTrans = 0;
 float calculate(int linkId){
 	//This will calculate TProp in microseconds
-	TProp = (Length/Velocity)/10;
+	TProp = (Length*1000/Velocity)/10;
 	double NoisePowerInWatts = pow(10,(NoisePower/10)-3);
 
 	double SignalPowerInWatts = pow(10,(Power/10)-3);
@@ -42,11 +42,11 @@ float calculate(int linkId){
 	float Capacity = Bandwidth*(log(1 + (SignalPowerInWatts/NoisePowerInWatts))/log(2));
 	//Trans is in microseconds
 	TTrans = (Size/Capacity);
-	float EndToEndDelay = 2*TProp + TTrans;
+	float EndToEndDelay = TProp + TTrans;
 	TTrans = TTrans/1000;
 	TProp = TProp/1000;
 	EndToEndDelay = EndToEndDelay/1000;
-	/*
+/*
 	Debug :
 	printf("*********************************************************\n");
 	printf("The Link id is %d \n",LinkId);
@@ -127,6 +127,6 @@ int main(void){
 		sendto(sockfd, (float *)& TTrans, sizeof TTrans , 0,(struct sockaddr *) &their_addr, addr_len);
 		sendto(sockfd, (float *)& TProp, sizeof TProp , 0,(struct sockaddr *) &their_addr, addr_len);
 		printf("The Server C finished sending the output to AWS  \n");
-
+		printf("\n \n \n");
 	}
 }

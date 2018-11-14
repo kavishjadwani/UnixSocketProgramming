@@ -37,7 +37,16 @@ float Velocity = 0 ;
 float NoisePower = 0;
 float TTrans = 0;
 float TProp = 0;
-
+int LinkIdA = 0;
+float BandwidthA = 0;
+float LengthA = 0;
+float VelocityA = 0 ;
+float NoisePowerA = 0;
+int LinkIdB = 0;
+float BandwidthB = 0;
+float LengthB = 0;
+float VelocityB = 0 ;
+float NoisePowerB = 0;
 void sigchld_handler(int s){
     int saved_errno = errno;
     while(waitpid(-1, NULL, WNOHANG) > 0);
@@ -141,12 +150,12 @@ int getDataB(int linkid){
 	//using UDP to send the data
 	sendto(mysock, (int *)& linkid, sizeof linkid, 0, p->ai_addr,p->ai_addrlen);
   printf("The AWS sent link ID= <%d> to Backend-Server <B> using UDP over port <%s>\n", linkid,PORTB);
-	recvfrom(mysock, (float *)& LinkId, sizeof LinkId, 0 , NULL, NULL);
-  recvfrom(mysock, (float *)& Bandwidth, sizeof Bandwidth, 0 , NULL, NULL);
-  recvfrom(mysock, (float *)& Length, sizeof Length, 0 , NULL, NULL);
-  recvfrom(mysock, (float *)& Velocity, sizeof Velocity, 0 , NULL, NULL);
-  recvfrom(mysock, (float *)& NoisePower, sizeof NoisePower, 0 , NULL, NULL);
-	return LinkId;
+	recvfrom(mysock, (float *)& LinkIdB, sizeof LinkIdB, 0 , NULL, NULL);
+  recvfrom(mysock, (float *)& BandwidthB, sizeof BandwidthB, 0 , NULL, NULL);
+  recvfrom(mysock, (float *)& LengthB, sizeof LengthB, 0 , NULL, NULL);
+  recvfrom(mysock, (float *)& VelocityB, sizeof VelocityB, 0 , NULL, NULL);
+  recvfrom(mysock, (float *)& NoisePowerB, sizeof NoisePowerB, 0 , NULL, NULL);
+	return LinkIdB;
 }
 int getDataA(int linkid){
   int mysock;
@@ -185,12 +194,12 @@ int getDataA(int linkid){
 	//using UDP to send the data
 	sendto(mysock, (int *)& linkid, sizeof linkid, 0, p->ai_addr,p->ai_addrlen);
   printf("The AWS sent link ID= <%d> to Backend-Server <A> using UDP over port <%s>\n", linkid,PORTA);
-	recvfrom(mysock, (int *)& LinkId, sizeof LinkId, 0 , NULL, NULL);
-  recvfrom(mysock, (float *)& Bandwidth, sizeof Bandwidth, 0 , NULL, NULL);
-  recvfrom(mysock, (float *)& Length, sizeof Length, 0 , NULL, NULL);
-  recvfrom(mysock, (float *)& Velocity, sizeof Velocity, 0 , NULL, NULL);
-  recvfrom(mysock, (float *)& NoisePower, sizeof NoisePower, 0 , NULL, NULL);
-	return LinkId;
+	recvfrom(mysock, (int *)& LinkIdA, sizeof LinkIdA, 0 , NULL, NULL);
+  recvfrom(mysock, (float *)& BandwidthA, sizeof BandwidthA, 0 , NULL, NULL);
+  recvfrom(mysock, (float *)& LengthA, sizeof LengthA, 0 , NULL, NULL);
+  recvfrom(mysock, (float *)& VelocityA, sizeof VelocityA, 0 , NULL, NULL);
+  recvfrom(mysock, (float *)& NoisePowerA, sizeof NoisePowerA, 0 , NULL, NULL);
+	return LinkIdA;
 }
 void clear_dead_process(){
 	struct sigaction sa; //sigaction() code is responsible for reaping zombie processes
@@ -296,21 +305,39 @@ int main(){
     printf("The AWS sent link ID= <%d>, size= <%d> and power= <%d> to the monitor using TCP over port <%s> \n",linkId,Size,Power,MONITORPORT);
 
 		int resultA = getDataA(linkId);
-    if(resultA == linkId)
+    int resultB = getDataB(linkId);
+    if(resultA == linkId){
       printf("The AWS received <1> matches from Backend-Server <A> using UDP over port <%s> \n", PORTA);
+      LinkId = LinkIdA;
+      Length = LengthA;
+      Bandwidth = BandwidthA;
+      Velocity = VelocityA;
+      NoisePower = NoisePowerA;
+    }
     else
     printf("The AWS received <0> matches from Backend-Server <A> using UDP over port <%s> \n", PORTA);
-    if(resultA != linkId){
-      resultA = getDataB(linkId);
-      if(resultA == linkId)
-        printf("The AWS received <1> matches from Backend-Server <B> using UDP over port <%s> \n", PORTB);
-      else
-      printf("The AWS received <0> matches from Backend-Server <B> using UDP over port <%s> \n", PORTB);
+    if(resultB == linkId){
+      printf("The AWS received <1> matches from Backend-Server <B> using UDP over port <%s> \n", PORTB);
+      LinkId = LinkIdB;
+      Length = LengthB;
+      Bandwidth = BandwidthB;
+      Velocity = VelocityB;
+      NoisePower = NoisePowerB;
     }
+    else
+    printf("The AWS received <0> matches from Backend-Server <B> using UDP over port <%s> \n", PORTB);
+
+    // if(resultA != linkId){
+    //   resultA = getDataB(linkId);
+    //   if(resultA == linkId)
+    //     printf("The AWS received <1> matches from Backend-Server <B> using UDP over port <%s> \n", PORTB);
+    //   else
+    //   printf("The AWS received <0> matches from Backend-Server <B> using UDP over port <%s> \n", PORTB);
+    // }
 		//calculate the final result
     float result;
     float finalResult = -1;
-    if(resultA == linkId){
+    if(LinkId == linkId){
 		  result = finalResult;
       finalResult = compute();
       }
@@ -322,11 +349,12 @@ int main(){
     send(new_fd_M, (const float *)&TProp, sizeof(TProp), 0);
 		send(new_fd, (const float *)&finalResult, sizeof(finalResult), 0);
     if(finalResult!=-1){
-      printf("The AWS sent delay = <%f> ms to the client using TCP over port <%s>\n",finalResult,TCPPORT);
+      printf("The AWS sent delay = <%.2f> ms to the client using TCP over port <%s>\n",finalResult,TCPPORT);
       printf("The AWS sent detailed results to the monitor using TCP over port <%s> \n",MONITORPORT);
 }else{
         printf("The AWS sent No Match to the monitor and the client using TCP over ports <%s> and <%s>, repsectively\n",TCPPORT,MONITORPORT);
     }
+    printf("\n \n \n");
     // finalResult = -1;
     close(new_fd);
     // close(new_fd_M);

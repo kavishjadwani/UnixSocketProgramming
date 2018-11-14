@@ -121,6 +121,6 @@ int main(void){
 		sendto(sockfd, (float *)& Velocity, sizeof Velocity , 0,(struct sockaddr *) &their_addr, addr_len);
 		sendto(sockfd, (float *)& NoisePower, sizeof NoisePower , 0,(struct sockaddr *) &their_addr, addr_len);
 		printf("The Server B finished sending the output to AWS  \n");
-
+		printf("\n \n \n");
 	}
 }
