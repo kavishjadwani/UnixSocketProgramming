@@ -287,7 +287,7 @@ int main(){
         if (!fork()) { // this is the child process
           close(sockfd_M); // child doesn't need the listener
           monitorOn=1;
-          printf("debug:monitorOn=%d\n",monitorOn);
+          // printf("debug:monitorOn=%d\n",monitorOn);
           continue;
         }
         close(new_fd_M);  // parent doesn't need this
@@ -316,9 +316,9 @@ int main(){
     recv(new_fd, (int *)&Size, sizeof Size, 0);
     recv(new_fd, (int *)&Power, sizeof Power, 0);
     send(new_fd_M, (const int *)&linkId, sizeof linkId , 0);
-    printf("******************************\n");
-    printf("The AWS sent link id %d to monitor\n", linkId);
-    printf("******************************\n");
+    // printf("******************************\n");
+    // printf("The AWS sent link id %d to monitor\n", linkId);
+    // printf("******************************\n");
     send(new_fd_M, (const int *)&Size, sizeof Size , 0);
     send(new_fd_M, (const int *)&Power, sizeof Power , 0);
     printf("The AWS received link ID= <%d>, size= <%d> and power= <%d> from the client using TCP over port  \n",linkId,Size,Power);

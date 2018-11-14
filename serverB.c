@@ -47,7 +47,6 @@ void read_file(int linkId){
 					Length = atof(getfield(tmp3,3));
 					Velocity = atof(getfield(tmp4,4));
 					NoisePower = atof(getfield(tmp5,5));
-					// printf("Link Id : %d, Bandwidth : %f, Length: %f, Velocity : %f, Noise Power : %f \n", LinkId,Bandwidth,Length,Velocity,NoisePower);
 					break;
 				}
         free(tmp);
@@ -92,12 +91,12 @@ int main(void){
 	}
 	freeaddrinfo(servinfo);
 	printf( "The Server B is up and running using UDP on port <%s>.\n", MYPORT);
+	//Keep the Socket for Server B ON
 	while(1){
 		addr_len = sizeof their_addr;
 		char function[3];
 		int pre_num = 0;
 		int result = 0;
-		// recvfrom(sockfd, function, sizeof function , 0,(struct sockaddr *)&their_addr, &addr_len);
 		recvfrom(sockfd, (char *)& pre_num, sizeof pre_num , 0,(struct sockaddr *)&their_addr, &addr_len);
 		printf("The Server B received input <%d>  \n", pre_num);
 		read_file(pre_num);

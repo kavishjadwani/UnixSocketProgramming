@@ -1,0 +1,3 @@
+Notes :
+IF the link Id is not found on both the Server A and Server B, then nothing is
+ sent to Server C and thus server C doesn't print anything. 

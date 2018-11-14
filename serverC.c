@@ -38,6 +38,7 @@ float calculate(int linkId){
 	TProp = TProp/1000;
 	EndToEndDelay = EndToEndDelay/1000;
 	/*
+	Debug :
 	printf("*********************************************************\n");
 	printf("The Link id is %d \n",LinkId);
 	printf("The Bandwidth is %f \n",Bandwidth);
@@ -95,6 +96,7 @@ int main(void){
 	}
 	freeaddrinfo(servinfo);
 	printf( "The Server C is up and running using UDP on port <%s>.\n", MYPORT);
+	//Keep the Socket for Server C ON
 	while(1){
 		addr_len = sizeof their_addr;
 		char function[3];
@@ -108,23 +110,13 @@ int main(void){
 		recvfrom(sockfd, (float *)& Length, sizeof Length , 0,(struct sockaddr *)&their_addr, &addr_len);
 		recvfrom(sockfd, (float *)& Velocity, sizeof Velocity , 0,(struct sockaddr *)&their_addr, &addr_len);
 		recvfrom(sockfd, (float *)& NoisePower, sizeof NoisePower , 0,(struct sockaddr *)&their_addr, &addr_len);
-		// printf("Bandwidth <%f>, Length <%f>, Velocity <%f> , Noise Power <%f> \n", Bandwidth,Length, Velocity,NoisePower);
-
-
-
-
 		printf("The Server C received link information of link <%d>, file size <%d>, and signal power <%d>  \n", LinkId, Size,Power);
-
 		result = calculate(LinkId);
 		printf("The Server C finished the calculation for link <%d> \n", LinkId);
 		//send back to aws
 		sendto(sockfd, (float *)& result, sizeof result , 0,(struct sockaddr *) &their_addr, addr_len);
 		sendto(sockfd, (float *)& TTrans, sizeof TTrans , 0,(struct sockaddr *) &their_addr, addr_len);
 		sendto(sockfd, (float *)& TProp, sizeof TProp , 0,(struct sockaddr *) &their_addr, addr_len);
-		// sendto(sockfd, (float *)& Bandwidth, sizeof Bandwidth , 0,(struct sockaddr *) &their_addr, addr_len);
-		// sendto(sockfd, (float *)& Length, sizeof Length , 0,(struct sockaddr *) &their_addr, addr_len);
-		// sendto(sockfd, (float *)& Velocity, sizeof Velocity , 0,(struct sockaddr *) &their_addr, addr_len);
-		// sendto(sockfd, (float *)& NoisePower, sizeof NoisePower , 0,(struct sockaddr *) &their_addr, addr_len);
 		printf("The Server C finished sending the output to AWS  \n");
 
 	}

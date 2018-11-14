@@ -47,7 +47,6 @@ void read_file(int linkId){
 					Length = atof(getfield(tmp3,3));
 					Velocity = atof(getfield(tmp4,4));
 					NoisePower = atof(getfield(tmp5,5));
-					// printf("Link Id : %d, Bandwidth : %d, Length: %d, Velocity : %d, Noise Power : %d \n", LinkId,Bandwidth,Length,Velocity,NoisePower);
 					break;
 				}
         free(tmp);
@@ -90,9 +89,8 @@ int main(void){
 		return 0;
 	}
 	freeaddrinfo(servinfo);
-	printf( "\nThe Server A is up and running using UDP on port <%s>.\n", MYPORT);
-
-
+	printf( "The Server A is up and running using UDP on port <%s>.\n", MYPORT);
+	//Keep the Socket for Server A ON 
 	while(1){
 		addr_len = sizeof their_addr;
 		char function[3];
@@ -106,10 +104,7 @@ int main(void){
 			printf("The server A has found <1> match \n");
 		else
 			printf("The server A has found <0> match \n");
-
 		result = 999;
-		// printf("The Server A has successfully finished the reduction  %d \n", result);
-
 		//send back to aws
 		sendto(sockfd, (int *)& LinkId, sizeof LinkId , 0,(struct sockaddr *) &their_addr, addr_len);
 		sendto(sockfd, (float *)& Bandwidth, sizeof Bandwidth , 0,(struct sockaddr *) &their_addr, addr_len);
