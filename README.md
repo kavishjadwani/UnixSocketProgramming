@@ -14,21 +14,21 @@ The Back-Server C is a computing server. It receives data from the AWS server, p
   The client takes an input argument from the command line that specifies the Link Id, Size and Power for the computation, where size is in bits and power in dBm.
   Client sends the input to AWS server over TCP
 
-	### Phase 2
-  #### Phase 2A  
+### Phase 2
+#### Phase 2A  
   The AWS server receives the input from the client and displays a message to indicate this
   The AWS server sends the information received by the client to the monitor over TCP Connection and displays the message to indicate this
   The monitor will receive the information received from client and will display the message to indicate  this
 	The AWS sends Link Id to Backend Server A and Backend Server B over UDP and display the message to indicate this
 	Each server (A and B) will search for the Link ID separately and send results back to AWS server over UDP, displaying their operation states
   The AWS will also print the number of results obtained from each of the Server A and Server B, 0 indicating that the link id was not found on the respective server  and 1 representing that the link id was found on the server
-  #### Phase 2B
+#### Phase 2B
   Once the AWS server receives replies from both storage servers, the AWS server check the replied messages and if both the messages indicate that the link id was not found of the storage servers, the AWS sends out a result indicating "No Match Found" and this message is displayed on both client and monitor
   If Link Id and other information is found on any of the storage servers, the AWS sends all the information to Backend Server C ie. the computing server to calculate the delay over UDP connection
   The backend server C does the computation
   Both AWS and Server C prints messages to indicate the communication of information and calculation of delay
-  
-	### Phase 3    
+
+### Phase 3    
 	At the end of phase 2B, backend server C will have the results ready and those results are sent to AWS over UDP
   When AWS receives the computation result, it forwards the end-to-end delay to the client and the client displays the end to end result. This is done over TCP Connection
   The AWS also sends final results to the monitor over TCP and monitor displays all the final results
@@ -64,10 +64,10 @@ The Back-Server C is a computing server. It receives data from the AWS server, p
 
 ### Messages exchange format example  
 #### Backend-Server A Terminal
-The Server A is up and running using UDP on port <21471>.
-The Server A received input <118>  
-The server A has found <1> match
-The Server A finished sending the output to AWS  
+  The Server A is up and running using UDP on port <21471>.
+  The Server A received input <118>  
+  The server A has found <1> match
+  The Server A finished sending the output to AWS  
 #### Backend-Server B Terminal
 The Server B is up and running using UDP on port <22471>.
 The Server B received input <118>  
