@@ -1,12 +1,13 @@
-####Kavish Jadwani
-####USC ID : 6917934471
+##Kavish Jadwani
+###USC ID : 6917934471
 # UnixSocketProgramming
 This project implements a model computational offloading where a single client issues three parameters (link ID, file/packet size, and signal power) to the AWS server and expects the reply for the end-to-end delay of the designated link.
 
 ## Description
 The server communicating with the client acts similar to AWS (Amazon Web Server). There are three backend servers, named Back-Server A, Back-Server B and Back-Server C. Back-Servers A and B are storage servers. Each of them possesses a database file, database_a.csv and database_b.csv, respectively, in which attribute values regarding information of links are stored.    
 The Back-Server C is a computing server. It receives data from the AWS server, performs computational tasks, and returns the results to the AWS server. The monitor connecting to the AWS server is used to record results of every steps and print them out. The client, monitor and the AWS communicate over TCP connections while the AWS and the Back-Servers A, B, & C communicate over UDP connections.
-##Phases of Project   
+
+## What I have done. Phases of Project   
 ###Phase 1
 	- All four server programs (AWS -a.k.a. server-D, Back-Server A, B, & C) boot up, listening at specific port for incoming packets/connections and display boot up message.  
   - The client takes an input argument from the command line that specifies the Link Id, Size and Power for the computation, where size is in bits and power in dBm.
@@ -61,137 +62,47 @@ The Back-Server C is a computing server. It receives data from the AWS server, p
 	6. The client.c will terminate by itself, other programs need to use <crtl+c> to terminate.
 
 ### Messages exchange format example  
-	1. Execute search hack  
-	- aws console  
-	The AWS is up and running.  
-	The AWS received input=<hack> and function=<search> from the client using TCP over port 25217  
-	Sent <search> and <hack> to Backend-Server A  
-	Sent <search> and <hack> to Backend-Server B  
-	Sent <search> and <hack> to Backend-Server C  
-	The AWS received <1> similar words from Backend-Server <A> using UDP over port <21217>  
-	The AWS received <1> similar words from Backend-Server <B> using UDP over port <22217>  
-	The AWS received <1> similar words from Backend-Server <C> using UDP over port <23217>  
-	The AWS sent <1> matches to client  
-	The AWS sent <hack> and <Jack> to client to the monitor via TCP port <26217>  
-	- client console  
-	The client is up and running.”  
-	The client sent <hack> and <search> to AWS.  
-	Found a match for < hack >:  
-	< Hackneyed; hired; mercenary. >  
-	- monitor console  
-	The monitor is up and running.  
-	Found a match for < hack >:  
-	< Hackneyed; hired; mercenary. >  
-	One edit distance match is <Jack>:  
-	<"To wash on a rack  as metals or ore.">  
-	- servera console  
-	The Server A is up and running using UDP on port <21217>.  
-	The Server A received input <search> and operation <hack>  
-	The Server A has found < 0 > matches and < 1 > similar words  
-	The Server A finished sending the output to AWS  
-	- serverb console  
-	The Server B is up and running using UDP on port <22217>.  
-	The Server B received input <search> and operation <hack>  
-	The Server B has found < 1 > matches and < 1 > similar words  
-	The Server B finished sending the output to AWS  
-	- serverc console  
-	The Server C is up and running using UDP on port <23217>.  
-	The Server C received input <search> and operation <hack>  
-	The Server C has found < 1 > matches and < 1 > similar words  
-	The Server C finished sending the output to AWS  
-
-	2. Execute <prefix> <accuse>  
-	- aws console  
-	The AWS is up and running.  
-	The AWS received input=<accus> and function=<prefix> from the client using TCP over port 25217  
-	Sent <prefix> and <accus> to Backend-Server A  
-	Sent <prefix> and <accus> to Backend-Server B  
-	Sent <prefix> and <accus> to Backend-Server C  
-	The AWS received <1> matches from Backend-Server <A> using UDP over port <21217>  
-	The AWS received <3> matches from Backend-Server <B> using UDP over port <22217>  
-	The AWS received <3> matches from Backend-Server <C> using UDP over port <23217>  
-	The AWS sent <7> matches to client  
-	The AWS sent <7> matches to the monitor via TCP port <26217>  
-	- client console  
-	The client is up and running.”  
-	The client sent <accus> and <prefix> to AWS.  
-	Found <7> matches for <accus>:  
-	<Accustomed>  
-	<Accuser>  
-	<Accuse>  
-	<Accusatorially>  
-	<Accustom>  
-	<Accuse>  
-	<Accusement>  
-	- monitor console  
-	The monitor is up and running.  
-	Found <7> matches for <accus>:  
-	<Accustomed>  
-	<Accuser>  
-	<Accuse>  
-	<Accusatorially>  
-	<Accustom>  
-	<Accuse>  
-	<Accusement>  
-	- servera console  
-	The Server A is up and running using UDP on port <21217>.  
-	The Server A received input <prefix> and operation <accus>  
-	The Server A has found < 1 > matches  
-	The Server A finished sending the output to AWS  
-	- serverb console  
-	The Server B is up and running using UDP on port <22217>.  
-	The Server B received input <prefix> and operation <accus>  
-	The Server B has found < 3 > matches  
-	The Server B finished sending the output to AWS  
-	- serverc console  
-	The Server C is up and running using UDP on port <23217>.  
-	The Server C received input <prefix> and operation <accus>  
-	The Server C has found < 3 > matches  
-	The Server C finished sending the output to AWS  
-
-	3. Execute <suffix> <ntable>  
-	- aws console  
-	The AWS is up and running.  
-	The AWS received input=<ntable> and function=<suffix> from the client using TCP over port 25217  
-	Sent <suffix> and <ntable> to Backend-Server A  
-	Sent <suffix> and <ntable> to Backend-Server B  
-	Sent <suffix> and <ntable> to Backend-Server C  
-	The AWS received <1> matches from Backend-Server <A> using UDP over port <21217>  
-	The AWS received <1> matches from Backend-Server <B> using UDP over port <22217>  
-	The AWS received <2> matches from Backend-Server <C> using UDP over port <23217>  
-	The AWS sent <4> matches to client  
-	The AWS sent <4> matches to the monitor via TCP port <26217>  
-	- client console  
-	The client is up and running.”  
-	The client sent <ntable> and <suffix> to AWS.  
-	Found <4> matches for <ntable>:  
-	<Replantable>  
-	<Acquaintable>  
-	<Accountable>  
-	<Fermentable>  
-	- monitor console  
-	The monitor is up and running.  
-	Found <4> matches for <ntable>:  
-	<Replantable>  
-	<Acquaintable>  
-	<Accountable>  
-	<Fermentable>  
-	- servera console  
-	The Server A is up and running using UDP on port <21217>.  
-	The Server A received input <suffix> and operation <ntable>  
-	The Server A has found < 1 > matches  
-	The Server A finished sending the output to AWS  
-	- serverb console  
-	The Server B is up and running using UDP on port <22217>.  
-	The Server B received input <suffix> and operation <ntable>  
-	The Server B has found < 1 > matches  
-	The Server B finished sending the output to AWS  
-	- serverc console  
-	The Server C is up and running using UDP on port <23217>.  
-	The Server C received input <suffix> and operation <ntable>  
-	The Server C has found < 2 > matches  
-	The Server C finished sending the output to AWS  
-
+#### Backend-Server A Terminal
+The Server A is up and running using UDP on port <21471>.
+The Server A received input <118>  
+The server A has found <1> match
+The Server A finished sending the output to AWS  
+#### Backend-Server B Terminal
+The Server B is up and running using UDP on port <22471>.
+The Server B received input <118>  
+The server B has found <0> match
+The Server B finished sending the output to AWS
+#### Backend-Server C Terminal
+The Server C is up and running using UDP on port <23471>.
+The Server C received link information of link <118>, file size <10000>, and signal power <-30>  
+The Server C finished the calculation for link <118>
+The Server C finished sending the output to AWS  
+#### AWS Terminal
+The AWS is up and running.
+The AWS received link ID= <118>, size= <10000> and power= <-30> from the client using TCP over port <25471>
+The AWS sent link ID= <118>, size= <10000> and power= <-30> to the monitor using TCP over port <26471>
+The AWS sent link ID= <118> to Backend-Server <A> using UDP over port <21471>
+The AWS sent link ID= <118> to Backend-Server <B> using UDP over port <22471>
+The AWS received <1> matches from Backend-Server <A> using UDP over port <21471>
+The AWS received <0> matches from Backend-Server <B> using UDP over port <22471>
+The AWS sent link ID= <118>, size = <10000>, power = <-30> and link information to Backend-Server C using UDP over port <23471>
+The AWS received outputs from Backend-Server C using UDP over port <23471>
+The AWS sent delay = <0.01> ms to the client using TCP over port <25471>
+The AWS sent detailed results to the monitor using TCP over port <26471>
+The AWS sent No Match to the monitor and the client using TCP over ports <25471> and <26471>, repsectively
+#### Client Terminal
+The client is up and running.
+The client sent ID= <118>, size= <10000> and power = <-30> to AWS
+The delay for link <118> is <0.01> ms
+Found no matches for link <555>
+#### Monitor Terminal
+The monitor is up and running.
+The  monitor received link ID = <118>, size = <10000>, and power = <-30> from the AWS
+The result for link  <118> :
+Tt = <0.012479> ms,
+Tp = <0.002509> ms,
+Delay = <0.01> ms
+Found no matches for link <555>
 
 ### Reused Code  
 	My TCP and UDP setting up code is based on examples in Beej's book.  
