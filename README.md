@@ -12,7 +12,8 @@ The Back-Server C is a computing server. It receives data from the AWS server, p
 ### Phase 1
 	All four server programs (AWS -a.k.a. server-D, Back-Server A, B, & C) boot up, listening at specific port for incoming packets/connections and display boot up message.  
   The client takes an input argument from the command line that specifies the Link Id, Size and Power for the computation, where size is in bits and power in dBm.
-  Client sends the input to AWS server over TCP  
+  Client sends the input to AWS server over TCP
+
 	### Phase 2
   #### Phase 2A  
   The AWS server receives the input from the client and displays a message to indicate this
@@ -26,6 +27,7 @@ The Back-Server C is a computing server. It receives data from the AWS server, p
   If Link Id and other information is found on any of the storage servers, the AWS sends all the information to Backend Server C ie. the computing server to calculate the delay over UDP connection
   The backend server C does the computation
   Both AWS and Server C prints messages to indicate the communication of information and calculation of delay
+  
 	### Phase 3    
 	At the end of phase 2B, backend server C will have the results ready and those results are sent to AWS over UDP
   When AWS receives the computation result, it forwards the end-to-end delay to the client and the client displays the end to end result. This is done over TCP Connection
