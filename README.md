@@ -98,7 +98,7 @@ The delay for link <118> is <0.01> ms
 Found no matches for link <555>
 #### Monitor Terminal
 The monitor is up and running.
-The  monitor received link ID = <118>, size = <10000>, and power = <-30> from the AWS
+The  monitor received link ID = <118>, size = <10000>, and power = <-30> from the AWS  
 The result for link  <118> :
 Tt = <0.012479> ms,
 Tp = <0.002509> ms,
