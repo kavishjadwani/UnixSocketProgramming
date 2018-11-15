@@ -11,7 +11,6 @@ The Back-Server C is a computing server. It receives data from the AWS server, p
 ## What I have done. Phases of Project   
 ### Phase 1
 All four server programs (AWS -a.k.a. server-D, Back-Server A, B, & C) boot up, listening at specific port for incoming packets/connections and display boot up message.  
-
 The client takes an input argument from the command line that specifies the Link Id, Size and Power for the computation, where size is in bits and power in dBm.
 Client sends the input to AWS server over TCP
 
