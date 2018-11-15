@@ -64,10 +64,10 @@ Receive input and other information from aws over UDP, do the computation for pr
 
 ### Messages exchange format example  
 #### Backend-Server A Terminal
-The Server A is up and running using UDP on port <21471>
-The Server A received input <118>  
-The server A has found <1> match
-The Server A finished sending the output to AWS  
+  The Server A is up and running using UDP on port <21471>
+  The Server A received input <118>  
+  The server A has found <1> match
+  The Server A finished sending the output to AWS  
 #### Backend-Server B Terminal
 The Server B is up and running using UDP on port <22471>.
 The Server B received input <118>  
