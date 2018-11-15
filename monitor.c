@@ -15,6 +15,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <math.h>
 #define PORT "26471" // the TCP port of aws that monitor connect to
 
 #define MAXDATASIZE 4000 // max number of bytes we can get at once
@@ -101,7 +102,7 @@ int main(void)
 				printf("The result for link  <%d> :\n",  LinkId);
 				printf("Tt = <%f> ms,\n", TTrans);
 				printf("Tp = <%f> ms,\n", TProp);
-				printf("Delay = <%f> ms\n", result);
+				printf("Delay = <%.2f> ms\n", round(result*100)/100);
 			}else
 				printf("Found no matches for link <%d> \n",LinkId);
 			LinkId = -1;

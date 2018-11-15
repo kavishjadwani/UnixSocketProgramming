@@ -18,6 +18,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <ctype.h>
+#include <math.h>
 
 #define AWSPORT "25471"   //aws TCP port
 #define HOST "localhost"
@@ -87,8 +88,10 @@ int main(int argc, char* argv[]){
 	printf("The client sent ID= <%d>, size= <%d> and power = <%d> to AWS \n",linkId,size,power);
 	float result = -1;
 	recv(sockfd, (float *)&result, sizeof result, 0);
-	if(result!=-1)
-		printf("The delay for link <%d> is <%f> ms \n", linkId, result);
+	if(result!=-1){
+		// result = round(result);
+		printf("The delay for link <%d> is <%.2f> ms \n", linkId,round(result*100)/100);
+	}
 	else
 		printf("Found no matches for link <%d> \n",linkId);
 	result = -1;

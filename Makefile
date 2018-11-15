@@ -13,13 +13,13 @@
 
 all:
 	gcc -o awsoutput aws.c
-	gcc -o client client.c
+	gcc -o client client.c -lm
 	# gcc -o listener listener.c
 	# gcc -o talker talker.c
 	gcc -o serverAoutput serverA.c
 	gcc -o serverBoutput serverB.c
 	gcc -o serverCoutput serverC.c -lm
-	gcc -o monitoroutput monitor.c
+	gcc -o monitoroutput monitor.c -lm
 
 .PHONY: aws
 aws:

@@ -121,7 +121,7 @@ int main(void){
 		recvfrom(sockfd, (float *)& NoisePower, sizeof NoisePower , 0,(struct sockaddr *)&their_addr, &addr_len);
 		printf("The Server C received link information of link <%d>, file size <%d>, and signal power <%d>  \n", LinkId, Size,Power);
 		result = calculate(LinkId);
-		printf("The Server C finished the calculation for link <%d> \n", LinkId);
+		printf("The Server C finished the calculation for link <%d>\n", LinkId);
 		//send back to aws
 		sendto(sockfd, (float *)& result, sizeof result , 0,(struct sockaddr *) &their_addr, addr_len);
 		sendto(sockfd, (float *)& TTrans, sizeof TTrans , 0,(struct sockaddr *) &their_addr, addr_len);
