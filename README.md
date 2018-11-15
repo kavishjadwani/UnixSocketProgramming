@@ -65,11 +65,8 @@ The Back-Server C is a computing server. It receives data from the AWS server, p
 ### Messages exchange format example  
 #### Backend-Server A Terminal
 The Server A is up and running using UDP on port <21471>.
-
 The Server A received input <118>  
-
 The server A has found <1> match
-
 The Server A finished sending the output to AWS  
 #### Backend-Server B Terminal
 The Server B is up and running using UDP on port <22471>.
