@@ -19,8 +19,8 @@ Client sends the input to AWS server over TCP
   The AWS server receives the input from the client and displays a message to indicate this
   The AWS server sends the information received by the client to the monitor over TCP Connection and displays the message to indicate this
   The monitor will receive the information received from client and will display the message to indicate  this
-	The AWS sends Link Id to Backend Server A and Backend Server B over UDP and display the message to indicate this
-	Each server (A and B) will search for the Link ID separately and send results back to AWS server over UDP, displaying their operation states
+  The AWS sends Link Id to Backend Server A and Backend Server B over UDP and display the message to indicate this
+  Each server (A and B) will search for the Link ID separately and send results back to AWS server over UDP, displaying their operation states
   The AWS will also print the number of results obtained from each of the Server A and Server B, 0 indicating that the link id was not found on the respective server  and 1 representing that the link id was found on the server
 #### Phase 2B
   Once the AWS server receives replies from both storage servers, the AWS server check the replied messages and if both the messages indicate that the link id was not found of the storage servers, the AWS sends out a result indicating "No Match Found" and this message is displayed on both client and monitor
@@ -29,27 +29,27 @@ Client sends the input to AWS server over TCP
   Both AWS and Server C prints messages to indicate the communication of information and calculation of delay
 
 ### Phase 3    
-	At the end of phase 2B, backend server C will have the results ready and those results are sent to AWS over UDP
-  When AWS receives the computation result, it forwards the end-to-end delay to the client and the client displays the end to end result. This is done over TCP Connection
-  The AWS also sends final results to the monitor over TCP and monitor displays all the final results
+At the end of phase 2B, backend server C will have the results ready and those results are sent to AWS over UDP
+When AWS receives the computation result, it forwards the end-to-end delay to the client and the client displays the end to end result. This is done over TCP Connection
+The AWS also sends final results to the monitor over TCP and monitor displays all the final results
 
 ## Code files  
 #### aws.c  
-	Receive input from client over TCP, send the input to two backend storage servers (A and B)over UDP. IF Link Id available on any of the storage server, AWS will send all information to Server C for Computation. After receving final values from Server C, AWS sends results to client and monitor.
-  After booting, the aws server can only be shut down by crtl+c command.  
+Receive input from client over TCP, send the input to two backend storage servers (A and B)over UDP. IF Link Id available on any of the storage server, AWS will send all information to Server C for Computation. After receving final values from Server C, AWS sends results to client and monitor.
+After booting, the aws server can only be shut down by crtl+c command.  
 #### client.c
-	Send input to aws over TCP. Receive feedback from aws and show on screen. The client will terminate itself after receiving feedback from aws.  
+Send input to aws over TCP. Receive feedback from aws and show on screen. The client will terminate itself after receiving feedback from aws.  
 #### monitor.c
-  Monitor will boot before client and will display the results sent by AWS.
-	After booting, the monitor can only be shut down by crtl+c command.   
+Monitor will boot before client and will display the results sent by AWS.
+After booting, the monitor can only be shut down by crtl+c command.   
 #### serverA.c
-	Receive link id from aws over UDP, do the searching in database A, send back result to aws.
-  After booting, the server A can only be shut down by crtl+c command.  
+Receive link id from aws over UDP, do the searching in database A, send back result to aws.
+After booting, the server A can only be shut down by crtl+c command.  
 #### serverB.c
-  Receive link id from aws over UDP, do the searching in database B, send back result to aws.
-  After booting, the server B can only be shut down by crtl+c command.  
+Receive link id from aws over UDP, do the searching in database B, send back result to aws.
+After booting, the server B can only be shut down by crtl+c command.  
 #### serverC.c
-	Receive input and other information from aws over UDP, do the computation for propagation delay, transmission delay and end to end delay and send back results to aws.  
+Receive input and other information from aws over UDP, do the computation for propagation delay, transmission delay and end to end delay and send back results to aws.  
 
 ### How to run
 	1. Put all files and two database txt files in one directory. Open six terminal in the directory, run each program in the following order on different terminals
