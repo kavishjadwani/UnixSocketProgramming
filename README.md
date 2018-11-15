@@ -64,6 +64,7 @@ Receive input and other information from aws over UDP, do the computation for pr
 
 ### Messages exchange format example  
 #### Backend-Server A Terminal
+-
 The Server A is up and running using UDP on port <21471>.
 The Server A received input <118>  
 The server A has found <1> match
@@ -106,4 +107,4 @@ Delay = <0.01> ms
 Found no matches for link <555>
 
 ### Reused Code  
-	My TCP and UDP setting up code is based on examples in Beej's book.  
+My TCP and UDP setting up code is based on examples in Beej's book.  
