@@ -10,9 +10,10 @@ The Back-Server C is a computing server. It receives data from the AWS server, p
 
 ## What I have done. Phases of Project   
 ### Phase 1
-	All four server programs (AWS -a.k.a. server-D, Back-Server A, B, & C) boot up, listening at specific port for incoming packets/connections and display boot up message.  
-  The client takes an input argument from the command line that specifies the Link Id, Size and Power for the computation, where size is in bits and power in dBm.
-  Client sends the input to AWS server over TCP
+All four server programs (AWS -a.k.a. server-D, Back-Server A, B, & C) boot up, listening at specific port for incoming packets/connections and display boot up message.  
+
+The client takes an input argument from the command line that specifies the Link Id, Size and Power for the computation, where size is in bits and power in dBm.
+Client sends the input to AWS server over TCP
 
 ### Phase 2
 #### Phase 2A  
@@ -53,7 +54,7 @@ The Back-Server C is a computing server. It receives data from the AWS server, p
 
 ### How to run
 	1. Put all files and two database txt files in one directory. Open six terminal in the directory, run each program in the following order on different terminals
-  2. Compile all fiels and create executables using the command : $make all
+  2. Compile all files and create executables using the command : $make all
 	3. run Server A by using the command :$make serverA
   4. run Server B by using the command :$make serverB
   4. run Server C by using the command :$make serverC
