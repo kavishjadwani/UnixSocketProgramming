@@ -52,15 +52,15 @@ After booting, the server B can only be shut down by crtl+c command.
 Receive input and other information from aws over UDP, do the computation for propagation delay, transmission delay and end to end delay and send back results to aws.  
 
 ### How to run
-	1. Put all files and two database txt files in one directory. Open six terminal in the directory, run each program in the following order on different terminals
-  2. Compile all files and create executables using the command : $make all
-	3. run Server A by using the command :$make serverA
-  4. run Server B by using the command :$make serverB
-  4. run Server C by using the command :$make serverC
-  6. run AWS server by using the command : $make aws
-  7. run Monitor by using the command : $make monitor
-	8. Run client using : $ ./client <LINK_ID> <SIZE> <POWER>
-	6. The client.c will terminate by itself, other programs need to use <crtl+c> to terminate.
+1. Put all files and two database txt files in one directory. Open six terminal in the directory, run each program in the following order on different terminals
+2. Compile all files and create executables using the command : $make all
+3. run Server A by using the command :$make serverA
+4. run Server B by using the command :$make serverB
+5. run Server C by using the command :$make serverC
+6. run AWS server by using the command : $make aws
+7. run Monitor by using the command : $make monitor
+8. Run client using : $ ./client <LINK_ID> <SIZE> <POWER>
+9. The client.c will terminate by itself, other programs need to use <crtl+c> to terminate.
 
 ### Messages exchange format example  
 #### Backend-Server A Terminal
