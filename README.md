@@ -1,5 +1,5 @@
-##Kavish Jadwani
-###USC ID : 6917934471
+#### Kavish Jadwani
+#### USC ID : 6917934471
 # UnixSocketProgramming
 This project implements a model computational offloading where a single client issues three parameters (link ID, file/packet size, and signal power) to the AWS server and expects the reply for the end-to-end delay of the designated link.
 
@@ -8,7 +8,7 @@ The server communicating with the client acts similar to AWS (Amazon Web Server)
 The Back-Server C is a computing server. It receives data from the AWS server, performs computational tasks, and returns the results to the AWS server. The monitor connecting to the AWS server is used to record results of every steps and print them out. The client, monitor and the AWS communicate over TCP connections while the AWS and the Back-Servers A, B, & C communicate over UDP connections.
 
 ## What I have done. Phases of Project   
-###Phase 1
+### Phase 1
 	- All four server programs (AWS -a.k.a. server-D, Back-Server A, B, & C) boot up, listening at specific port for incoming packets/connections and display boot up message.  
   - The client takes an input argument from the command line that specifies the Link Id, Size and Power for the computation, where size is in bits and power in dBm.
   -Client sends the input to AWS server over TCP  
@@ -33,21 +33,21 @@ The Back-Server C is a computing server. It receives data from the AWS server, p
   - The AWS also sends final results to the monitor over TCP and monitor displays all the final results
 
 ## Code files  
-####aws.c  
+#### aws.c  
 	Receive input from client over TCP, send the input to two backend storage servers (A and B)over UDP. IF Link Id available on any of the storage server, AWS will send all information to Server C for Computation. After receving final values from Server C, AWS sends results to client and monitor.
   After booting, the aws server can only be shut down by crtl+c command.  
-####client.c
+#### client.c
 	Send input to aws over TCP. Receive feedback from aws and show on screen. The client will terminate itself after receiving feedback from aws.  
-####monitor.c
+#### monitor.c
   Monitor will boot before client and will display the results sent by AWS.
 	After booting, the monitor can only be shut down by crtl+c command.   
-####serverA.c
+#### serverA.c
 	Receive link id from aws over UDP, do the searching in database A, send back result to aws.
   After booting, the server A can only be shut down by crtl+c command.  
-####serverB.c
+#### serverB.c
   Receive link id from aws over UDP, do the searching in database B, send back result to aws.
   After booting, the server B can only be shut down by crtl+c command.  
-####serverC.c
+#### serverC.c
 	Receive input and other information from aws over UDP, do the computation for propagation delay, transmission delay and end to end delay and send back results to aws.  
 
 ### How to run
