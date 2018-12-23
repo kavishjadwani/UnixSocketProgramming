@@ -100,8 +100,8 @@ int main(void)
 			recv(sockfd, (float *)&TProp, sizeof TProp, 0);
 			if(result!=-1){
 				printf("The result for link  <%d> :\n",  LinkId);
-				printf("Tt = <%f> ms,\n", TTrans);
-				printf("Tp = <%f> ms,\n", TProp);
+				printf("Tt = <%.2f> ms,\n", round(TTrans*100)/100);
+				printf("Tp = <%.2f> ms,\n", round(TProp*100)/100);
 				printf("Delay = <%.2f> ms\n", round(result*100)/100);
 			}else
 				printf("Found no matches for link <%d> \n",LinkId);
